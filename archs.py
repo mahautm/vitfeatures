@@ -16,7 +16,7 @@ def initialize_vision_module(name: str = "resnet50", pretrained: bool = True):
     if name not in modules:
         raise KeyError(f"{name} is not currently supported.")
 
-    # model = modules[name]
+    model = modules[name]
 
     if name in ["resnet50", "resnet101", "resnet152"]:
         n_features = model.fc.in_features
@@ -48,8 +48,4 @@ def initialize_vision_module(name: str = "resnet50", pretrained: bool = True):
             model.eval()
         )  # Mat : --> dropout blocked, as well as all other training dependant behaviors
 
-    # return model, n_features, name
     return model, fc_layer, n_features
-
-
-print(initialize_vision_module())
