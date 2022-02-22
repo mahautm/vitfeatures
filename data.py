@@ -3,11 +3,11 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import random
+# import random
 from typing import Optional
 
 import torch
-from PIL import ImageFilter
+# from PIL import ImageFilter
 from torchvision import datasets, transforms
 
 
@@ -26,7 +26,6 @@ def get_dataloader(
     image_size: int = 32,
     num_workers: int = 0,
     is_distributed: bool = False,
-    use_augmentations: bool = True,
     return_original_image: bool = False,
     seed: int = 111,
     training_set: bool = True,
@@ -34,7 +33,7 @@ def get_dataloader(
     # Mat : Param : training_set : if true will load the training set. Otherwise will load test set. (only works with CIFAR)
 
     transformations = ImageTransformation(
-        image_size, use_augmentations, return_original_image, dataset_name
+        image_size, return_original_image, dataset_name
     )
 
     if dataset_name == "cifar100":
@@ -73,23 +72,11 @@ class ImageTransformation:
     def __init__(
         self,
         size: int,
-        augmentation: bool = False,
         return_original_image: bool = False,
         dataset_name: Optional[str] = None,
     ):
 
-        if augmentation:
-            s = 1
-            color_jitter = transforms.ColorJitter(0.8 * s, 0.8 * s, 0.8 * s, 0.2 * s)
-            transformations = [
-                transforms.RandomResizedCrop(size=size),
-                transforms.RandomApply([color_jitter], p=0.8),
-                transforms.RandomGrayscale(p=0.2),
-                transforms.RandomApply([GaussianBlur([0.1, 2.0])], p=0.5),
-                transforms.RandomHorizontalFlip(),  # with 0.5 probability
-            ]
-        else:
-            transformations = [
+        transformations = [
                 transforms.Resize(size=(size, size)),
             ]
 
