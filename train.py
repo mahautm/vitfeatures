@@ -16,14 +16,45 @@ import torch.optim as optim
 # PARAMS
 n_epochs = 10
 output_path = "/mnt/efs/fs1/logs/vitfeatures"
+device = "cuda"
 
-def pretrain_networks():
-    pass
 
-def train():
+def load_and_pretrain_networks():
+
     model1, fc_layer1, n_features1 = initialize_vision_module("vit")
     model2, fc_layer2, n_features2 = initialize_vision_module("resnet152")
+    return (
+        model1.to(device),
+        fc_layer1.to(device),
+        n_features1.to(device),
+        model2.to(device),
+        fc_layer2.to(device),
+        n_features2.to(device),
+    )
 
+
+def train_linear():
+    (
+        model1,
+        fc_layer1,
+        n_features1,
+        model2,
+        fc_layer2,
+        n_features2,
+    ) = load_and_pretrain_networks()
+    # freeze everything
+    for param in model1.parameters():
+        param.requires_grad = False
+    for param in fc_layer1.parameters():
+        param.requires_grad = False
+    model1 = model.eval()
+    for param in model2.parameters():
+        param.requires_grad = False
+    for param in fc_layer2.parameters():
+        param.requires_grad = False
+    model2 = model.eval()
+
+    # split model, and add a linear layer in the midle
     model12 = Sequential(
         model1,
         nn.Linear(n_features1, n_features2),
@@ -37,6 +68,8 @@ def train():
     )
     models = [model12, model21]
     ground_truth = [[model1, fc_layer1], [model2, fc_layer2]]
+
+    # acquire data
     train_data_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
@@ -48,6 +81,7 @@ def train():
         return_original_image=False,
     )
 
+    # train both models
     for i_model, model in enumerate(models):
         criterion = torch.nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -84,5 +118,5 @@ def train():
 
 
 if __name__ == "__main__":
-    pretrain_networks()
-    train()
+    load_and_pretrain_networks()
+    train_linear()
