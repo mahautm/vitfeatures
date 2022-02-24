@@ -36,8 +36,8 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     # get and train models
     model1 = initialize_vision_module(model_name_1).to(device)
     model2 = initialize_vision_module(model_name_2).to(device)
-    model1 = train_model(model1)
-    model2 = train_model(model2)
+    model1 = train_model(model1, train_data_loader)
+    model2 = train_model(model2, train_data_loader)
     print("Finished Initial Training")
 
     # Save models
