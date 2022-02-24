@@ -26,10 +26,10 @@ def load_and_pretrain_networks():
     return (
         model1.to(device),
         fc_layer1.to(device),
-        n_features1.to(device),
+        n_features1,
         model2.to(device),
         fc_layer2.to(device),
-        n_features2.to(device),
+        n_features2,
     )
 
 
