@@ -26,7 +26,6 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
         image_size=384,
         batch_size=16,
         num_workers=2,
-        is_distributed=False,
         seed=123,
         return_original_image=False,
     )
@@ -40,7 +39,7 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     model1 = train_model(model1)
     model2 = train_model(model2)
     print("Finished Initial Training")
-    
+
     # Save models
     output_path.mkdir(exist_ok=True, parents=True)
     torch.save(model1, output_path / model_name_1)
@@ -68,11 +67,10 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     print("Finished Linear Mapping")
 
     # analyse hybrid model performance
-    test_models(model1, model2, model21, model12)
+    test_models(model1, model2, model21, model12, train_data_loader, test_data_loader)
     # save hybrids
     torch.save(model1, output_path / model_name_1)
     torch.save(model2, output_path / model_name_2)
-
 
 
 if __name__ == "__main__":
