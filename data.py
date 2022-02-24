@@ -7,15 +7,16 @@
 from typing import Optional
 
 import torch
+
 # from PIL import ImageFilter
 from torchvision import datasets, transforms
 
-
+# TODO : work out how to get rid of this
 def collate_fn(batch):
     return (
         torch.stack([x[0][0] for x in batch], dim=0),  # sender_input
-        torch.cat([torch.Tensor([x[1]]).long() for x in batch], dim=0),  # labels
-        torch.stack([x[0][1] for x in batch], dim=0),  # receiver_input
+        [],  # labels
+        # torch.stack([x[0][1] for x in batch], dim=0),  # receiver_input
     )
 
 
@@ -24,7 +25,7 @@ def get_dataloader(
     dataset_name: str,
     batch_size: int = 32,
     image_size: int = 32,
-    num_workers: int = 0,
+    num_workers: int = 1,
     is_distributed: bool = False,
     return_original_image: bool = False,
     seed: int = 111,
@@ -62,6 +63,7 @@ def get_dataloader(
 
     return train_loader
 
+
 class ImageTransformation:
     """
     A stochastic data augmentation module that transforms any given data example
@@ -77,8 +79,8 @@ class ImageTransformation:
     ):
 
         transformations = [
-                transforms.Resize(size=(size, size)),
-            ]
+            transforms.Resize(size=(size, size)),
+        ]
 
         transformations.append(transforms.ToTensor())
 

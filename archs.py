@@ -3,7 +3,7 @@ import timm
 from torch import nn
 
 
-def initialize_vision_module(name: str = "resnet50", pretrained: bool = True):
+def initialize_vision_module(name: str = "resnet50", pretrained: bool = False):
     print("initialize module", name)
     modules = {
         "resnet50": torchvision.models.resnet50(pretrained=pretrained),
