@@ -1,3 +1,4 @@
+from re import M
 import torchvision
 import timm
 from torch import nn
@@ -17,7 +18,13 @@ def initialize_vision_module(name: str = "resnet50", pretrained: bool = False):
         raise KeyError(f"{name} is not currently supported.")
 
     model = modules[name]
+    return model
 
+def behead_freeze(model, name):
+    '''
+    WIP
+    '''
+    # separate top layer
     if name in ["resnet50", "resnet101", "resnet152"]:
         n_features = model.fc.in_features
         fc_layer = model.fc
@@ -39,13 +46,13 @@ def initialize_vision_module(name: str = "resnet50", pretrained: bool = False):
         fc_layer = model.head
         model.head = nn.Identity()
 
-    if pretrained:
-        for param in model.parameters():
-            param.requires_grad = False
-        for param in fc_layer.parameters():
-            param.requires_grad = False
-        model = (
-            model.eval()
-        )  # Mat : --> dropout blocked, as well as all other training dependant behaviors
+    # freeze parameters, no more training will occur
 
+    for param in model.parameters():
+        param.requires_grad = False
+    for param in fc_layer.parameters():
+        param.requires_grad = False
+    model = (
+        model.eval()
+    )  # Mat : --> dropout blocked, as well as all other training dependant behaviors
     return model, fc_layer, n_features

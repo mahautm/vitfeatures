@@ -11,14 +11,6 @@ import torch
 # from PIL import ImageFilter
 from torchvision import datasets, transforms
 
-# TODO : work out how to get rid of this
-def collate_fn(batch):
-    return (
-        torch.stack([x[0][0] for x in batch], dim=0),  # sender_input
-        [],  # labels
-        # torch.stack([x[0][1] for x in batch], dim=0),  # receiver_input
-    )
-
 
 def get_dataloader(
     dataset_dir: str,
@@ -26,42 +18,49 @@ def get_dataloader(
     batch_size: int = 32,
     image_size: int = 32,
     num_workers: int = 1,
-    is_distributed: bool = False,
     return_original_image: bool = False,
     seed: int = 111,
-    training_set: bool = True,
 ):
-    # Mat : Param : training_set : if true will load the training set. Otherwise will load test set. (only works with CIFAR)
 
     transformations = ImageTransformation(
         image_size, return_original_image, dataset_name
-    )
+    ) # TODO : check what is happening here
 
     if dataset_name == "cifar100":
         train_dataset = datasets.CIFAR100(
-            root="./data", train=training_set, download=True, transform=transformations
+            root="./data", download=True, transform=transformations
         )
     else:
         train_dataset = datasets.ImageFolder(dataset_dir, transform=transformations)
 
     train_sampler = None
-    if is_distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(
-            train_dataset, shuffle=True, drop_last=True, seed=seed
-        )
 
+    test_dataset, train_dataset = torch.utils.data.random_split(
+        train_dataset,
+        [len(train_dataset) // 10, len(train_dataset) // 10 * 9],
+        torch.Generator().manual_seed(seed),
+    )
+
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=(train_sampler is None),
+        sampler=train_sampler,
+        num_workers=num_workers,
+        drop_last=True,
+        pin_memory=True,
+    )
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size,
         shuffle=(train_sampler is None),
         sampler=train_sampler,
         num_workers=num_workers,
-        collate_fn=collate_fn,
         drop_last=True,
         pin_memory=True,
     )
 
-    return train_loader
+    return test_loader, train_loader
 
 
 class ImageTransformation:
