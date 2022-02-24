@@ -17,9 +17,7 @@ output_path = "/mnt/efs/fs1/logs/vitfeatures"
 device = "cuda"
 
 
-def train_model(
-    model: nn.module, train_data_loader, n_epochs=10, label_model=None, verbose=False
-):
+def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose=False):
     """
     if label_model is empty, then training occurs normaly
     otherwise, training will use the labels given by the label_model for a given input
