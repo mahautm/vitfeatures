@@ -24,7 +24,7 @@ def get_dataloader(
 
     transformations = ImageTransformation(
         image_size, return_original_image, dataset_name
-    ) # TODO : check what is happening here
+    )  # TODO : check what is happening here
 
     if dataset_name == "cifar100":
         train_dataset = datasets.CIFAR100(
@@ -106,7 +106,6 @@ class ImageTransformation:
             )
 
     def __call__(self, x):
-        x_i, x_j = self.transform(x), self.transform(x)
         if self.return_original_image:
-            return x_i, x_j, self.original_image_transform(x)
-        return x_i, x_j
+            return self.transform(x), self.original_image_transform(x)
+        return self.transform(x)
