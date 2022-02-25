@@ -32,7 +32,7 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
             inputs, _labels = data
             inputs = inputs.to(device)
             labels = _labels if label_model is None else label_model(inputs)
-            labels = labels.to(device)
+            labels = labels.float().to(device)
             # zero the parameter gradients
             optimizer.zero_grad()
 
