@@ -1,4 +1,3 @@
-from re import M
 import torchvision
 import timm
 from torch import nn
