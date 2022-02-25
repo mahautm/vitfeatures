@@ -18,6 +18,60 @@ output_path = "/mnt/efs/fs1/logs/vitfeatures"
 device = "cuda"
 
 
+def features(model_name_1="vit", model_name_2="vgg11"):
+    # get data
+    test_data_loader, train_data_loader = get_dataloader(
+        dataset_dir="",  # not required for cifar100
+        dataset_name="cifar100",
+        image_size=384,
+        batch_size=16,
+        num_workers=2,
+        seed=123,
+        return_original_image=False,
+    )
+    """
+    TODO : n_epochs is implicitly set at 10 during training, think on that
+    TODO : validation must be added during training, as well as better logging
+    """
+    # get and train models
+    model1 = initialize_vision_module(model_name_1).to(device)
+    model2 = initialize_vision_module(model_name_2).to(device)
+    model1 = train_model(model1, train_data_loader)
+    model2 = train_model(model2, train_data_loader)
+    print("Finished Initial Training")
+
+    # Save models
+    output_path.mkdir(exist_ok=True, parents=True)
+    torch.save(model1, output_path / model_name_1)
+    torch.save(model2, output_path / model_name_2)
+
+    # get features from one model to be linked by a linear layer to the other's classification layer
+    feature_extractor_1, classifier_1, n_features1 = behead_freeze(model1, model_name_1)
+    feature_extractor_2, classifier_2, n_features2 = behead_freeze(model2, model_name_2)
+
+    mapper12 = Sequential(
+        feature_extractor_1,
+        nn.Linear(n_features1, n_features2),
+    ).to(device)
+
+    mapper21 = Sequential(
+        feature_extractor_2,
+        nn.Linear(n_features2, n_features1),
+    ).to(device)
+
+    # train the linear layer to map features to classifiers
+    mapper12 = train_model(mapper12, train_data_loader, label_model=feature_extractor_2)
+    mapper21 = train_model(mapper21, train_data_loader, label_model=feature_extractor_1)
+    print("Finished Linear Mapping")
+
+    # analyse hybrid model performance
+    test_models(model1, model2, mapper12, mapper21, train_data_loader, test_data_loader)
+    # save hybrids
+    torch.save(mapper12, output_path / model_name_1 + "lin")
+    torch.save(mapper21, output_path / model_name_2 + "lin")
+    pass
+
+
 def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     # get data
     test_data_loader, train_data_loader = get_dataloader(
@@ -69,9 +123,9 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     # analyse hybrid model performance
     test_models(model1, model2, model21, model12, train_data_loader, test_data_loader)
     # save hybrids
-    torch.save(model1, output_path / model_name_1)
-    torch.save(model2, output_path / model_name_2)
+    torch.save(model12, output_path / model_name_1)
+    torch.save(model21, output_path / model_name_2)
 
 
 if __name__ == "__main__":
-    pass
+    features()
