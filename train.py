@@ -29,16 +29,12 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
         for i, data in enumerate(train_data_loader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, _labels = data
-            print(inputs)
-            print(len(inputs))
             labels = _labels if label_model is None else label_model(inputs)
             # zero the parameter gradients
             optimizer.zero_grad()
 
             # forward + backward + optimize
-            outputs = model(
-                torch.Tensor(inputs)
-            )  # Mat 24/02/2022 stopped here to solve AttributeError: 'list' object has no attribute 'shape'
+            outputs = model(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
