@@ -35,7 +35,7 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
 
             # forward + backward + optimize
             outputs = model(
-                torch(inputs)
+                torch.Tensor(inputs)
             )  # Mat 24/02/2022 stopped here to solve AttributeError: 'list' object has no attribute 'shape'
             loss = criterion(outputs, labels)
             loss.backward()
