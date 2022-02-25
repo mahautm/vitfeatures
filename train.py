@@ -22,6 +22,7 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
     if label_model is empty, then training occurs normaly
     otherwise, training will use the labels given by the label_model for a given input
     """
+    model.to(device)
     for epoch in range(n_epochs):  # loop over the dataset multiple times
         criterion = torch.nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001)

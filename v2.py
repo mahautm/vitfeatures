@@ -34,8 +34,8 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     TODO : validation must be added during training, as well as better logging
     """
     # get and train models
-    model1 = initialize_vision_module(model_name_1).to(device)
-    model2 = initialize_vision_module(model_name_2).to(device)
+    model1 = initialize_vision_module(model_name_1)
+    model2 = initialize_vision_module(model_name_2)
     model1 = train_model(model1, train_data_loader)
     model2 = train_model(model2, train_data_loader)
     print("Finished Initial Training")
@@ -52,12 +52,12 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     mapper12 = Sequential(
         feature_extractor_1,
         nn.Linear(n_features1, n_features2),
-    ).to(device)
+    )
 
     mapper21 = Sequential(
         feature_extractor_2,
         nn.Linear(n_features2, n_features1),
-    ).to(device)
+    )
 
     # train the linear layer to map features to classifiers
     mapper12 = train_model(mapper12, train_data_loader, label_model=feature_extractor_2)
@@ -65,7 +65,14 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     print("Finished Linear Mapping")
 
     # analyse hybrid model performance
-    test_models(model1, model2, mapper12, mapper21, train_data_loader, test_data_loader)
+    test_models(
+        model1,
+        model2,
+        Sequential(mapper12, classifier_2),
+        Sequential(mapper21, classifier_1),
+        train_data_loader,
+        test_data_loader,
+    )
     # save hybrids
     torch.save(mapper12, output_path / model_name_1 + "lin")
     torch.save(mapper21, output_path / model_name_2 + "lin")
@@ -88,8 +95,8 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
     TODO : validation must be added during training, as well as better logging
     """
     # get and train models
-    model1 = initialize_vision_module(model_name_1).to(device)
-    model2 = initialize_vision_module(model_name_2).to(device)
+    model1 = initialize_vision_module(model_name_1)
+    model2 = initialize_vision_module(model_name_2)
     model1 = train_model(model1, train_data_loader)
     model2 = train_model(model2, train_data_loader)
     print("Finished Initial Training")
@@ -107,13 +114,13 @@ def full_experiment(model_name_1="vit", model_name_2="vgg11"):
         feature_extractor_1,
         nn.Linear(n_features1, n_features2),
         classifier_2,
-    ).to(device)
+    )
 
     model21 = Sequential(
         feature_extractor_2,
         nn.Linear(n_features2, n_features1),
         classifier_1,
-    ).to(device)
+    )
 
     # train the linear layer to map features to classifiers
     model12 = train_model(model12, train_data_loader, label_model=model2)
