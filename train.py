@@ -30,7 +30,7 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
         for i, data in enumerate(train_data_loader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, _labels = data
-            inputs = inputs.to(device)         
+            inputs.to(device)
             labels = _labels if label_model is None else label_model(inputs)
             labels = labels.to(device)
             # zero the parameter gradients
