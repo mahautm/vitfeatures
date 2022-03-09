@@ -12,6 +12,7 @@ from test import test_models
 import torch
 from torch import nn
 from torch.nn import Sequential
+import torch.optim as optim
 
 # PARAMS
 output_path = "/mnt/efs/fs1/logs/vitfeatures"
@@ -34,10 +35,25 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     TODO : validation must be added during training, as well as better logging
     """
     # get and train models
+
     model1 = initialize_vision_module(model_name_1)
     model2 = initialize_vision_module(model_name_2)
-    model1 = train_model(model1, train_data_loader)
-    model2 = train_model(model2, train_data_loader)
+    optimiser1 = optim.Adam(model1.parameters(), lr=0.0001)
+    optimiser2 = optim.Adam(model2.parameters(), lr=0.0001)
+    model1 = train_model(
+        model1,
+        train_data_loader,
+        optimiser1,
+        criterion=torch.nn.CrossEntropyLoss(),
+        verbose=True,
+    )
+    model2 = train_model(
+        model2,
+        train_data_loader,
+        optimiser2,
+        criterion=torch.nn.CrossEntropyLoss(),
+        verbose=True,
+    )
     print("Finished Initial Training")
 
     # Save models

@@ -8,24 +8,27 @@
 from data import get_dataloader
 from archs import initialize_vision_module
 import torch
-from torch import nn
-from torch.nn import Sequential
-import torch.optim as optim
 
 # PARAMS
 output_path = "/mnt/efs/fs1/logs/vitfeatures"
 device = "cuda"
 
 
-def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose=False):
+def train_model(
+    model,
+    train_data_loader,
+    optimiser,
+    n_epochs=10,
+    label_model=None,
+    verbose=False,
+    criterion=torch.nn.MSELoss(),
+):
     """
     if label_model is empty, then training occurs normaly
     otherwise, training will use the labels given by the label_model for a given input
     """
     model.to(device)
     for epoch in range(n_epochs):  # loop over the dataset multiple times
-        criterion = torch.nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.001)
         running_loss = 0.0
         for i, data in enumerate(train_data_loader, 0):
             # get the inputs; data is a list of [inputs, labels]
@@ -34,19 +37,21 @@ def train_model(model, train_data_loader, n_epochs=10, label_model=None, verbose
             labels = _labels if label_model is None else label_model(inputs)
             labels = labels.float().to(device)
             # zero the parameter gradients
-            optimizer.zero_grad()
+            optimiser.zero_grad()
 
             # forward + backward + optimize
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
-            optimizer.step()
+            optimiser.step()
 
             # print statistics
-            running_loss += loss.item()
-            if verbose and i % 100 == 99:  # print every 100 mini-batches
-                print(f"[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}")
-                running_loss = 0.0
+            # running_loss += loss.item()
+            if verbose:  # and i % 100 == 99:  # print every 100 mini-batches
+                print(
+                    f"[{epoch + 1}, {i + 1:5d}] loss: {loss.item():.3f}"
+                )  # running_loss / 2000:.3f}")
+                # running_loss = 0.0
     return model
 
 

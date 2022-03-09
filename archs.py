@@ -15,7 +15,6 @@ def initialize_vision_module(name: str = "resnet50", pretrained: bool = False):
     }
     if name not in modules:
         raise KeyError(f"{name} is not currently supported.")
-
     model = modules[name]
     return model
 
