@@ -34,8 +34,8 @@ def train_model(
             # get the inputs; data is a list of [inputs, labels]
             inputs, _labels = data
             inputs = inputs.to(device)
-            labels = _labels if label_model is None else label_model(inputs)
-            labels = labels.float().to(device)
+            labels = _labels if label_model is None else label_model(inputs).float()
+            labels = labels.to(device)
             # zero the parameter gradients
             optimiser.zero_grad()
 
