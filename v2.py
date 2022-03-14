@@ -88,8 +88,20 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     )
 
     # train the linear layer to map features to classifiers
-    mapper12 = train_model(mapper12, train_data_loader, label_model=feature_extractor_2)
-    mapper21 = train_model(mapper21, train_data_loader, label_model=feature_extractor_1)
+    optimiser1 = optim.Adam(mapper12.parameters(), lr=0.0001)
+    optimiser2 = optim.Adam(mapper21.parameters(), lr=0.0001)
+    mapper12 = train_model(
+        mapper12,
+        train_data_loader,
+        label_model=feature_extractor_2,
+        optimiser=optimiser1,
+    )
+    mapper21 = train_model(
+        mapper21,
+        train_data_loader,
+        label_model=feature_extractor_1,
+        optimiser=optimiser2,
+    )
     print("Finished Linear Mapping")
 
     # analyse hybrid model performance
