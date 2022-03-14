@@ -25,27 +25,27 @@ def get_models(
     model_name_1=None,
     model_name_2=None,
 ):
-    model1 = initialize_vision_module(model_name_1)
-    model2 = initialize_vision_module(model_name_2)
-    optimiser1 = optim.Adam(model1.parameters(), lr=0.0001)
-    optimiser2 = optim.Adam(model2.parameters(), lr=0.0001)
-    model1 = train_model(
-        model1,
-        train_data_loader,
-        optimiser1,
-        criterion=torch.nn.CrossEntropyLoss(),
-        verbose=True,
-    )
-    model2 = train_model(
-        model2,
-        train_data_loader,
-        optimiser2,
-        criterion=torch.nn.CrossEntropyLoss(),
-        verbose=True,
-    )
-    print("Finished Initial Training")
+    model1 = initialize_vision_module(model_name_1, pretrained=True)
+    model2 = initialize_vision_module(model_name_2, pretrained=True)
+    # optimiser1 = optim.Adam(model1.parameters(), lr=0.0001)
+    # optimiser2 = optim.Adam(model2.parameters(), lr=0.0001)
+    # model1 = train_model(
+    #     model1,
+    #     train_data_loader,
+    #     optimiser1,
+    #     criterion=torch.nn.CrossEntropyLoss(),
+    #     verbose=True,
+    # )
+    # model2 = train_model(
+    #     model2,
+    #     train_data_loader,
+    #     optimiser2,
+    #     criterion=torch.nn.CrossEntropyLoss(),
+    #     verbose=True,
+    # )
+    # print("Finished Initial Training")
 
-    # Save models
+    # # Save models
     output_path.mkdir(exist_ok=True, parents=True)
     torch.save(model1, output_path / model_name_1)
     torch.save(model2, output_path / model_name_2)
