@@ -48,8 +48,8 @@ def get_models(
 
     # # Save models
     os.mkdir(output_path)
-    torch.save(model1, output_path / model_name_1)
-    torch.save(model2, output_path / model_name_2)
+    torch.save(model1, output_path + "/" + model_name_1)
+    torch.save(model2, output_path + "/" + model_name_2)
 
     return model1, model2
 
