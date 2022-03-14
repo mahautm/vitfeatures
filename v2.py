@@ -63,7 +63,7 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     test_data_loader, train_data_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
-        image_size=128,
+        image_size=384,
         batch_size=16,
         num_workers=2,
         seed=123,
