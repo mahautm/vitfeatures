@@ -70,7 +70,7 @@ def features(model_name_1="vit", model_name_2="vgg11"):
     )
 
     # get and train models
-    model1, model2 = get_models(model_name_1, model_name_2)
+    model1, model2 = get_models(model_name_1=model_name_1, model_name_2=model_name_2)
 
     # get features from one model to be linked by a linear layer to the other's classification layer
     feature_extractor_1, classifier_1, n_features1 = behead_freeze(model1, model_name_1)

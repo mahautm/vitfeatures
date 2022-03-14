@@ -3,7 +3,7 @@ import torch
 
 def test_models(model1, model2, model21, model12, train_data_loader):
     """
-    LossA,B = Acc(CA(FA())) − Acc(CA(MB→AFB()))
+    LossA,  = Acc(CA(FA())) − Acc(CA(MB→AFB()))
     """
     with torch.no_grad():
         # test all models on all data

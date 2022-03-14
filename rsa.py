@@ -7,9 +7,9 @@ import numpy as np
 from sklearn import metrics
 
 # from scipy.stats import spearmanr
-# from scipy.stats import pearsonr
+from scipy.stats import pearsonr
 
-# device = "cuda"
+device = "cuda"
 # interaction_path = sys.argv[1]
 # print(f"loading {interaction_path} and reading in data")
 # interaction = torch.load(interaction_path)
@@ -40,7 +40,7 @@ def compute_model_rsa(train_data_loader, model1, model2):
     f1_cos = metrics.pairwise.cosine_similarity(features1)
     f2_cos = metrics.pairwise.cosine_similarity(features2)
     # print("extracting uppper triangular matrices")
-    f1_upper_tri = sender_cos[np.triu_indices(f1_cos.shape[0], k=1)]
-    f2_upper_tri = receiver_cos[np.triu_indices(f2_cos.shape[0], k=1)]
+    f1_upper_tri = f1_cos[np.triu_indices(f1_cos.shape[0], k=1)]
+    f2_upper_tri = f2_cos[np.triu_indices(f2_cos.shape[0], k=1)]
     # print("computing Pearson and Spearman correlations")
     return f1_cos, f2_cos, pearsonr(f1_upper_tri, f2_upper_tri)[0]
