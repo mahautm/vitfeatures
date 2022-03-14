@@ -47,7 +47,7 @@ def get_models(
     # print("Finished Initial Training")
 
     # # Save models
-    os.mkdir(output_path)
+    os.makedirs(output_path, exist_ok=True)
     torch.save(model1, output_path + "/" + model_name_1)
     torch.save(model2, output_path + "/" + model_name_2)
 
