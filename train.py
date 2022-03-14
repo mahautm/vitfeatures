@@ -30,6 +30,8 @@ def train_model(
     model.to(device)
     for epoch in range(n_epochs):  # loop over the dataset multiple times
         running_loss = 0.0
+        if label_model is not None:
+            label_model = label_model.to(device)
         for i, data in enumerate(train_data_loader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, _labels = data
