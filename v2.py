@@ -14,6 +14,7 @@ import torch
 from torch import nn
 from torch.nn import Sequential
 import torch.optim as optim
+import os
 
 # PARAMS
 output_path = "/mnt/efs/fs1/logs/vitfeatures"
@@ -46,7 +47,7 @@ def get_models(
     # print("Finished Initial Training")
 
     # # Save models
-    output_path.mkdir(exist_ok=True, parents=True)
+    os.mkdir(output_path, exist_ok=True, parents=True)
     torch.save(model1, output_path / model_name_1)
     torch.save(model2, output_path / model_name_2)
 
