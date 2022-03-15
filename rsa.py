@@ -35,6 +35,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
     for model_number, model in enumerate([model1, model2]):
         model = model.to(device)
         for i in range(n_images // train_data_loader.batch_size):
+            print(i)
             images, _ = next(iter(train_data_loader))
             features[model_number].append(model(images.to(device)).to("cpu"))
 
