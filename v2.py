@@ -17,7 +17,7 @@ import torch.optim as optim
 import os
 
 # PARAMS
-output_path = "/mnt/efs/fs1/logs/vitfeatures"
+output_path = "/shared/mateo/vitfeatures"
 device = "cuda"
 
 

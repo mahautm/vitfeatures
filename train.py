@@ -10,7 +10,7 @@ from archs import initialize_vision_module
 import torch
 
 # PARAMS
-output_path = "/mnt/efs/fs1/logs/vitfeatures"
+output_path = "/shared/mateo/vitfeatures"
 device = "cuda"
 
 
