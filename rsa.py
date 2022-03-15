@@ -2,6 +2,7 @@
 # python ./compute_rsa_on_resnet_outputs.py \
 # /private/home/rdessi/interactions_for_marco/latest_interaction_for_neurips_all_fields_valid
 import sys
+from tabnanny import verbose
 import torch
 import numpy as np
 from sklearn import metrics
@@ -31,11 +32,13 @@ device = "cuda"
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
     # print("reading data")
     images = [data for i, data in enumerate(train_data_loader) if i < n_images]
+    if verbose:
+        print("images loaded")
     model1 = model1.to(device)
     model2 = model2.to(device)
     # print("feature extraction")
-    features1 = model1(torch.tensor(images).to(device)).to("cpu")
-    features2 = model2(torch.tensor(images).to(device)).to("cpu")
+    features1 = model1(torch.Tensor(images).to(device)).to("cpu")
+    features2 = model2(torch.Tensor(images).to(device)).to("cpu")
     # print("computing pairwise cosines")
     f1_cos = metrics.pairwise.cosine_similarity(features1)
     f2_cos = metrics.pairwise.cosine_similarity(features2)
