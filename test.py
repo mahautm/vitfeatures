@@ -1,7 +1,7 @@
 import torch
 
 
-def test_models(model1, model2, model21, model12, train_data_loader):
+def test_models(model1, model2, model21, model12, train_data_loader, _):
     """
     LossA,  = Acc(CA(FA())) − Acc(CA(MB→AFB()))
     """
