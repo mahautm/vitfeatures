@@ -54,7 +54,7 @@ def get_models(
     return model1, model2
 
 
-def features(model_name_1="vit", model_name_2="resnet50"):
+def features(model_name_1="vgg11", model_name_2="resnet50"):
     """
     TODO : n_epochs is implicitly set at 10 during training, think on that
     TODO : validation must be added during training, as well as better logging
