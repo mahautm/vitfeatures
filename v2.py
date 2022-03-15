@@ -64,7 +64,7 @@ def features(model_name_1="vit", model_name_2="vgg11"):
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
         image_size=384,
-        batch_size=16,
+        batch_size=2,
         num_workers=2,
         seed=123,
         return_original_image=False,
