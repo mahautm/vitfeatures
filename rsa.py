@@ -31,17 +31,20 @@ device = "cuda"
 
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
     # print("reading data")
-    images = [data for i, data in enumerate(train_data_loader) if i < n_images]
-    if verbose:
-        print("images loaded")
-    model1 = model1.to(device)
+    features = torch.Tensor([[],[]])
+    for model_number, model in enumerate(model1, model2) :
+        model = model.to(device)
+        for i in range(n_images//train_data_loader.batch_size):
+            images, _ = next(iter(train_data_loader))
+            features[model_number] = torch.cat(features[model_number],model(images.to(device)).to("cpu"))
+
+    
     model2 = model2.to(device)
     # print("feature extraction")
-    features1 = model1(torch.Tensor(images).to(device)).to("cpu")
     features2 = model2(torch.Tensor(images).to(device)).to("cpu")
     # print("computing pairwise cosines")
-    f1_cos = metrics.pairwise.cosine_similarity(features1)
-    f2_cos = metrics.pairwise.cosine_similarity(features2)
+    f1_cos = metrics.pairwise.cosine_similarity(features[0])
+    f2_cos = metrics.pairwise.cosine_similarity(features[1])
     # print("extracting uppper triangular matrices")
     f1_upper_tri = f1_cos[np.triu_indices(f1_cos.shape[0], k=1)]
     f2_upper_tri = f2_cos[np.triu_indices(f2_cos.shape[0], k=1)]
