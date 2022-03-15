@@ -37,7 +37,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
         for i in range(n_images // train_data_loader.batch_size):
             images, _ = next(iter(train_data_loader))
             features[model_number] = torch.cat(
-                features[model_number], model(images.to(device)).to("cpu")
+                [features[model_number], model(images.to(device)).to("cpu")]
             )
 
     model2 = model2.to(device)
