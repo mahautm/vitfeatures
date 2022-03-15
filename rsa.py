@@ -28,9 +28,9 @@ device = "cuda"
 # # print(f"Spearman correlation: {spearmanr(sender_upper_tri,receiver_upper_tri).correlation}")
 
 
-def compute_model_rsa(train_data_loader, model1, model2):
+def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
     # print("reading data")
-    images = [data for data in train_data_loader]
+    images = [data for i, data in enumerate(train_data_loader) if i < n_images]
     model1 = model1.to(device)
     model2 = model2.to(device)
     # print("feature extraction")

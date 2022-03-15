@@ -64,7 +64,7 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
         image_size=384,
-        batch_size=1,
+        batch_size=16,
         num_workers=2,
         seed=123,
         return_original_image=False,
