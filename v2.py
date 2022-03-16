@@ -119,7 +119,7 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     pass
 
 
-def rsa_check(model1_path, model2_path):
+def rsa_check(model_path, model_name_1, model_name_2):
     # load trained models
     _, train_data_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
@@ -130,7 +130,11 @@ def rsa_check(model1_path, model2_path):
         seed=123,
         return_original_image=False,
     )
-    model1, model2 = torch.load(model1_path), torch.load(model2_path)
+    model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
+        os.path.join(model_path, model_name_2)
+    )
+    model1, _, _ = behead_freeze(model1, model_name_1)
+    model2, _, _ = behead_freeze(model2, model_name_2)
     f1_cos, f2_cos, pearsonr = compute_model_rsa(train_data_loader, model1, model2)
     print(f1_cos, f2_cos, pearsonr)
     # store data / make some kind of graph
