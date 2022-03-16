@@ -2,7 +2,6 @@
 # python ./compute_rsa_on_resnet_outputs.py \
 # /private/home/rdessi/interactions_for_marco/latest_interaction_for_neurips_all_fields_valid
 import sys
-from tabnanny import verbose
 import torch
 import numpy as np
 from sklearn import metrics
@@ -29,7 +28,7 @@ device = "cuda"
 # # print(f"Spearman correlation: {spearmanr(sender_upper_tri,receiver_upper_tri).correlation}")
 
 # v2.rsa_check('./models/vgg11','./models/vit')
-def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
+def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=True):
     # print("reading data")
     features = [[], []]
     for model_number, model in enumerate([model1, model2]):
