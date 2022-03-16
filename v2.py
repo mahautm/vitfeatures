@@ -119,7 +119,7 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     pass
 
 
-def rsa_check(model_path, model_name_1, model_name_2):
+def rsa_check(model_path="./models", model_name_1="vgg11", model_name_2="vit"):
     # load trained models
     _, train_data_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
