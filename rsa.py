@@ -28,20 +28,21 @@ device = "cuda"
 # print(f"Pearson correlation: {pearsonr(sender_upper_tri,receiver_upper_tri)[0]}")
 # # print(f"Spearman correlation: {spearmanr(sender_upper_tri,receiver_upper_tri).correlation}")
 
-
+# v2.rsa_check('./models/vgg11','./models/vit')
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000):
     # print("reading data")
     features = [[], []]
     for model_number, model in enumerate([model1, model2]):
         model = model.to(device)
         for i in range(n_images // train_data_loader.batch_size):
-            print(i)
+            if verbose:
+                print(
+                    f"model: {model_number} batch: {i}/{n_images // train_data_loader.batch_size}"
+                )
             images, _ = next(iter(train_data_loader))
             features[model_number].append(model(images.to(device)).to("cpu"))
-
-    model2 = model2.to(device)
-    # print("feature extraction")
-    features2 = model2(torch.Tensor(images).to(device)).to("cpu")
+            # maybe here add garbage collection
+            torch.cuda.empty_cache()
     # print("computing pairwise cosines")
     f1_cos = metrics.pairwise.cosine_similarity(features[0])
     f2_cos = metrics.pairwise.cosine_similarity(features[1])
