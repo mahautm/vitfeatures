@@ -28,7 +28,7 @@ device = "cuda"
 # # print(f"Spearman correlation: {spearmanr(sender_upper_tri,receiver_upper_tri).correlation}")
 
 # v2.rsa_check('./models/vgg11','./models/vit')
-def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=True):
+def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=False):
     # print("reading data")
     features = [[], []]
     for model_number, model in enumerate([model1, model2]):

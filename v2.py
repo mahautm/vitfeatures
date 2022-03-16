@@ -125,7 +125,7 @@ def rsa_check(model_path="./models", model_name_1="vgg11", model_name_2="vit"):
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
         image_size=384,
-        batch_size=2,
+        batch_size=64,
         num_workers=2,
         seed=123,
         return_original_image=False,
