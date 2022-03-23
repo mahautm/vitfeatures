@@ -197,4 +197,5 @@ def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
 
 
 if __name__ == "__main__":
+    rsa_check()
     features()
