@@ -40,7 +40,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
                 )
             images, _ = next(iter(train_data_loader))
             feature = model(images.to(device))
-            features[model_number].append(feature.to("cpu"))
+            features[model_number].append(feature.to("cpu").detach().numpy()) # not sure numpy is necessary here
     # print("computing pairwise cosines")
     f1_cos = metrics.pairwise.cosine_similarity(features[0])
     f2_cos = metrics.pairwise.cosine_similarity(features[1])

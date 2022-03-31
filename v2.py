@@ -135,7 +135,7 @@ def rsa_check(model_path="./models", model_name_1="vgg11", model_name_2="vit"):
     )
     model1, _, _ = behead_freeze(model1, model_name_1)
     model2, _, _ = behead_freeze(model2, model_name_2)
-    f1_cos, f2_cos, pearsonr = compute_model_rsa(train_data_loader, model1, model2)
+    f1_cos, f2_cos, pearsonr = compute_model_rsa(train_data_loader, model1, model2, verbose=True)
     print(f1_cos, f2_cos, pearsonr)
     # store data / make some kind of graph
     pass
