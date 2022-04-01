@@ -36,7 +36,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
         for i in range(n_images // train_data_loader.batch_size):
             if verbose:
                 print(
-                    f"model: {model_number} batch: {i + 1}/{n_images + 1// train_data_loader.batch_size}"
+                    f"model: {model_number +1} batch: {i + 1}/{n_images // train_data_loader.batch_size}"
                 )
             images, _ = next(iter(train_data_loader))
             feature = model(images.to(device))
@@ -44,7 +44,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
                 feature.to("cpu").detach().numpy()
             )  # not sure numpy is necessary here
     # print("computing pairwise cosines")
-    print(np.array(features).shape)
+    print(np.array(features[0]).shape)
     f1_cos = metrics.pairwise.cosine_similarity(features[0])
     f2_cos = metrics.pairwise.cosine_similarity(features[1])
     # print("extracting uppper triangular matrices")
