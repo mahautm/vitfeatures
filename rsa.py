@@ -47,7 +47,6 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
                     (features[model_number], feature.to("cpu").detach().numpy())
                 )
     # print("computing pairwise cosines")
-    print(np.array(features[0]).shape)
     f1_cos = metrics.pairwise.cosine_similarity(features[0])
     f2_cos = metrics.pairwise.cosine_similarity(features[1])
     # print("extracting uppper triangular matrices")

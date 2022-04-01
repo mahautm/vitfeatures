@@ -15,6 +15,7 @@ from torch import nn
 from torch.nn import Sequential
 import torch.optim as optim
 import os
+import sys
 
 # PARAMS
 output_path = "/shared/mateo/vitfeatures"
@@ -119,7 +120,9 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     pass
 
 
-def rsa_check(model_path="./models", model_name_1="vgg11", model_name_2="vit"):
+def rsa_check(
+    model_path="./models", model_name_1="vgg11", model_name_2="vit", verbose=False
+):
     # load trained models
     _, train_data_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
@@ -135,7 +138,9 @@ def rsa_check(model_path="./models", model_name_1="vgg11", model_name_2="vit"):
     )
     model1, _, _ = behead_freeze(model1, model_name_1)
     model2, _, _ = behead_freeze(model2, model_name_2)
-    f1_cos, f2_cos, pearsonr = compute_model_rsa(train_data_loader, model1, model2, verbose=True)
+    f1_cos, f2_cos, pearsonr = compute_model_rsa(
+        train_data_loader, model1, model2, verbose=verbose
+    )
     print(f1_cos, f2_cos, pearsonr)
     # store data / make some kind of graph
     pass
@@ -197,5 +202,7 @@ def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
 
 
 if __name__ == "__main__":
-    rsa_check()
-    features()
+    params = sys.argv[1:]  # TODO : argparse
+    print(params)
+    rsa_check(model_name_1=params[0], model_name_2=params[1])
+    # features() #TODO : move to a new file
