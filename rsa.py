@@ -44,7 +44,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
                 features[model_number] = feature.to("cpu").detach().numpy()
             else:
                 np.concatenate(
-                    features[model_number], feature.to("cpu").detach().numpy()
+                    (features[model_number], feature.to("cpu").detach().numpy())
                 )
     # print("computing pairwise cosines")
     print(np.array(features[0]).shape)
