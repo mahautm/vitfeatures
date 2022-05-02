@@ -179,4 +179,4 @@ def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
 if __name__ == "__main__":
     params = sys.argv[1:]  # TODO : argparse
     print(params)
-    features(params)  # TODO : move to a new file
+    features(params[0], params[1])  # TODO : move to a new file
