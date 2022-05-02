@@ -21,37 +21,37 @@ output_path = "/shared/mateo/vitfeatures"
 device = "cuda"
 
 
-def get_models(
-    train_data_loader=None,
-    model_name_1=None,
-    model_name_2=None,
-):
-    model1 = initialize_vision_module(model_name_1, pretrained=True)
-    model2 = initialize_vision_module(model_name_2, pretrained=True)
-    # optimiser1 = optim.Adam(model1.parameters(), lr=0.0001)
-    # optimiser2 = optim.Adam(model2.parameters(), lr=0.0001)
-    # model1 = train_model(
-    #     model1,
-    #     train_data_loader,
-    #     optimiser1,
-    #     criterion=torch.nn.CrossEntropyLoss(),
-    #     verbose=True,
-    # )
-    # model2 = train_model(
-    #     model2,
-    #     train_data_loader,
-    #     optimiser2,
-    #     criterion=torch.nn.CrossEntropyLoss(),
-    #     verbose=True,
-    # )
-    # print("Finished Initial Training")
+# def get_models(
+#     train_data_loader=None,
+#     model_name_1=None,
+#     model_name_2=None,
+# ):
+#     model1 = initialize_vision_module(model_name_1, pretrained=True)
+# model2 = initialize_vision_module(model_name_2, pretrained=True)
+# optimiser1 = optim.Adam(model1.parameters(), lr=0.0001)
+# optimiser2 = optim.Adam(model2.parameters(), lr=0.0001)
+# model1 = train_model(
+#     model1,
+#     train_data_loader,
+#     optimiser1,
+#     criterion=torch.nn.CrossEntropyLoss(),
+#     verbose=True,
+# )
+# model2 = train_model(
+#     model2,
+#     train_data_loader,
+#     optimiser2,
+#     criterion=torch.nn.CrossEntropyLoss(),
+#     verbose=True,
+# )
+# print("Finished Initial Training")
 
-    # # Save models
-    os.makedirs(output_path, exist_ok=True)
-    torch.save(model1, output_path + "/" + model_name_1)
-    torch.save(model2, output_path + "/" + model_name_2)
+# # Save models
+# os.makedirs(output_path, exist_ok=True)
+# torch.save(model1, output_path + "/" + model_name_1)
+# torch.save(model2, output_path + "/" + model_name_2)
 
-    return model1, model2
+# return model1  # , model2
 
 
 def features(model_name_1="vgg11", model_name_2="resnet50"):
@@ -71,7 +71,9 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     )
 
     # get and train models
-    model1, model2 = get_models(model_name_1=model_name_1, model_name_2=model_name_2)
+    model1, model2 = initialize_vision_module(
+        model_name_1, pretrained=True
+    ), initialize_vision_module(model_name_2, pretrained=True)
 
     # get features from one model to be linked by a linear layer to the other's classification layer
     feature_extractor_1, classifier_1, n_features1 = behead_freeze(model1, model_name_1)

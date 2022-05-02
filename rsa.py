@@ -8,7 +8,7 @@ from sklearn import metrics
 
 # from scipy.stats import spearmanr
 from scipy.stats import pearsonr
-from archs import behead_freeze
+from archs import initialize_vision_module, behead_freeze
 from data import get_dataloader
 
 
@@ -44,9 +44,10 @@ def rsa_check(
         seed=123,
         return_original_image=False,
     )
-    model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
-        os.path.join(model_path, model_name_2)
-    )
+    # model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
+    #     os.path.join(model_path, model_name_2)
+    # )
+    model1, model2 = initialize_vision_module(model_name_1, pretrained=True), initialize_vision_module(model_name_2, pretrained=True)
     model1, _, _ = behead_freeze(model1, model_name_1)
     model2, _, _ = behead_freeze(model2, model_name_2)
     f1_cos, f2_cos, pearsonr = compute_model_rsa(
