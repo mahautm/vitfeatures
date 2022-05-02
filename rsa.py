@@ -1,13 +1,16 @@
 # Usage:
 # python ./compute_rsa_on_resnet_outputs.py \
 # /private/home/rdessi/interactions_for_marco/latest_interaction_for_neurips_all_fields_valid
-import sys
+import os, sys
 import torch
 import numpy as np
 from sklearn import metrics
 
 # from scipy.stats import spearmanr
 from scipy.stats import pearsonr
+from archs import behead_freeze
+from data import get_dataloader
+
 
 device = "cuda"
 # interaction_path = sys.argv[1]
@@ -28,6 +31,31 @@ device = "cuda"
 # # print(f"Spearman correlation: {spearmanr(sender_upper_tri,receiver_upper_tri).correlation}")
 
 # v2.rsa_check('./models/vgg11','./models/vit')
+def rsa_check(
+    model_path="./models", model_name_1="vgg11", model_name_2="vit", verbose=False
+):
+    # load trained models
+    _, train_data_loader = get_dataloader(
+        dataset_dir="",  # not required for cifar100
+        dataset_name="cifar100",
+        image_size=384,
+        batch_size=64,
+        num_workers=2,
+        seed=123,
+        return_original_image=False,
+    )
+    model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
+        os.path.join(model_path, model_name_2)
+    )
+    model1, _, _ = behead_freeze(model1, model_name_1)
+    model2, _, _ = behead_freeze(model2, model_name_2)
+    f1_cos, f2_cos, pearsonr = compute_model_rsa(
+        train_data_loader, model1, model2, verbose=verbose
+    )
+    print(f1_cos, f2_cos, pearsonr)
+    # store data / make some kind of graph
+
+
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=False):
     # print("reading data")
     features = [[], []]
@@ -54,3 +82,9 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
     f2_upper_tri = f2_cos[np.triu_indices(f2_cos.shape[0], k=1)]
     # print("computing Pearson and Spearman correlations")
     return f1_cos, f2_cos, pearsonr(f1_upper_tri, f2_upper_tri)[0]
+
+
+if __name__ == "__main__":
+    params = sys.argv[1:]  # TODO : argparse
+    print(params)
+    rsa_check(model_name_1=params[0], model_name_2=params[1])

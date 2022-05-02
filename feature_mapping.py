@@ -9,7 +9,6 @@ from data import get_dataloader
 from archs import initialize_vision_module, behead_freeze
 from train import train_model
 from test import test_models
-from rsa import compute_model_rsa
 import torch
 from torch import nn
 from torch.nn import Sequential
@@ -120,32 +119,6 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     pass
 
 
-def rsa_check(
-    model_path="./models", model_name_1="vgg11", model_name_2="vit", verbose=False
-):
-    # load trained models
-    _, train_data_loader = get_dataloader(
-        dataset_dir="",  # not required for cifar100
-        dataset_name="cifar100",
-        image_size=384,
-        batch_size=64,
-        num_workers=2,
-        seed=123,
-        return_original_image=False,
-    )
-    model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
-        os.path.join(model_path, model_name_2)
-    )
-    model1, _, _ = behead_freeze(model1, model_name_1)
-    model2, _, _ = behead_freeze(model2, model_name_2)
-    f1_cos, f2_cos, pearsonr = compute_model_rsa(
-        train_data_loader, model1, model2, verbose=verbose
-    )
-    print(f1_cos, f2_cos, pearsonr)
-    # store data / make some kind of graph
-    pass
-
-
 def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
     # get data
     test_data_loader, train_data_loader = get_dataloader(
@@ -204,5 +177,4 @@ def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
 if __name__ == "__main__":
     params = sys.argv[1:]  # TODO : argparse
     print(params)
-    rsa_check(model_name_1=params[0], model_name_2=params[1])
-    # features() #TODO : move to a new file
+    features(params)  # TODO : move to a new file
