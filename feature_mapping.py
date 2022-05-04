@@ -61,7 +61,7 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     """
     # get data
     validation_loader = get_dataloader(
-        dataset_dir="",  # not required for cifar100
+        dataset_dir="./data",
         dataset_name="cifar100",
         image_size=384,
         batch_size=16,
