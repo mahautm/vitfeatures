@@ -59,20 +59,20 @@ def rsa_check(
     f1_cos, f2_cos, pearsonr = compute_model_rsa(
         train_data_loader, model1, model2, verbose=verbose
     )
-    return(f1_cos, f2_cos, pearsonr)
+    return (f1_cos, f2_cos, pearsonr)
     # store data / make some kind of graph
 
 
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=False):
     features = [[], []]
-    for model_number, model in enumerate([model1, model2]):
-        model = model.to(device)
-        for i in range(n_images // train_data_loader.batch_size):
+
+    for i in range(n_images // train_data_loader.batch_size):
+        images, _ = next(iter(train_data_loader))
+        for model_number, model in enumerate([model1.to(device), model2.to(device)]):
             if verbose:
                 print(
                     f"model: {model_number +1} batch: {i + 1}/{n_images // train_data_loader.batch_size}"
                 )
-            images, _ = next(iter(train_data_loader))
             feature = model(images.to(device))
             if i == 0:
                 features[model_number] = feature.to("cpu").detach().numpy()
@@ -93,7 +93,7 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
 if __name__ == "__main__":
     params = sys.argv[1:]  # TODO : argparse
     print(params)
-    _,_,rsa_score = rsa_check(
+    _, _, rsa_score = rsa_check(
         model_name_1=params[0],
         model_name_2=params[1],
         seed=params[2] if len() > 2 else 123,
