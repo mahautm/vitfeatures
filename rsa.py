@@ -96,6 +96,6 @@ if __name__ == "__main__":
     _, _, rsa_score = rsa_check(
         model_name_1=params[0],
         model_name_2=params[1],
-        seed=params[2] if len() > 2 else 123,
+        seed=params[2] if len(params) > 2 else 123,
     )
     print(rsa_score)
