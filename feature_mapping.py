@@ -60,7 +60,7 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     TODO : validation must be added during training, as well as better logging
     """
     # get data
-    test_data_loader, train_data_loader = get_dataloader(
+    validation_loader = get_dataloader(
         dataset_dir="",  # not required for cifar100
         dataset_name="cifar100",
         image_size=384,
@@ -94,27 +94,27 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     optimiser2 = optim.Adam(mapper21.parameters(), lr=0.0001)
     mapper12 = train_model(
         mapper12,
-        train_data_loader,
+        validation_loader,
         label_model=feature_extractor_2,
         optimiser=optimiser1,
     )
     mapper21 = train_model(
         mapper21,
-        train_data_loader,
+        validation_loader,
         label_model=feature_extractor_1,
         optimiser=optimiser2,
     )
     print("Finished Linear Mapping")
 
     # analyse hybrid model performance
-    test_models(
-        model1,
-        model2,
-        Sequential(mapper12, classifier_2),
-        Sequential(mapper21, classifier_1),
-        train_data_loader,
-        test_data_loader,
-    )
+    # test_models(
+    #     model1,
+    #     model2,
+    #     Sequential(mapper12, classifier_2),
+    #     Sequential(mapper21, classifier_1),
+    #     train_data_loader,
+    #     test_data_loader,
+    # )
     # save hybrids
     torch.save(mapper12, output_path / model_name_1 + "lin")
     torch.save(mapper21, output_path / model_name_2 + "lin")

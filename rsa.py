@@ -32,33 +32,38 @@ device = "cuda"
 
 # v2.rsa_check('./models/vgg11','./models/vit')
 def rsa_check(
-    model_path="./models", model_name_1="vgg11", model_name_2="vit", verbose=False
+    model_path="./models",
+    model_name_1="vgg11",
+    model_name_2="vit",
+    verbose=False,
+    seed=123,
 ):
     # load trained models
-    _, train_data_loader = get_dataloader(
-        dataset_dir="",  # not required for cifar100
+    train_data_loader = get_dataloader(
+        dataset_dir="./data",
         dataset_name="cifar100",
         image_size=384,
         batch_size=64,
         num_workers=2,
-        seed=123,
+        seed=seed,
         return_original_image=False,
     )
     # model1, model2 = torch.load(os.path.join(model_path, model_name_1)), torch.load(
     #     os.path.join(model_path, model_name_2)
     # )
-    model1, model2 = initialize_vision_module(model_name_1, pretrained=True), initialize_vision_module(model_name_2, pretrained=True)
+    model1, model2 = initialize_vision_module(
+        model_name_1, pretrained=True
+    ), initialize_vision_module(model_name_2, pretrained=True)
     model1, _, _ = behead_freeze(model1, model_name_1)
     model2, _, _ = behead_freeze(model2, model_name_2)
     f1_cos, f2_cos, pearsonr = compute_model_rsa(
         train_data_loader, model1, model2, verbose=verbose
     )
-    print(f1_cos, f2_cos, pearsonr)
+    return(f1_cos, f2_cos, pearsonr)
     # store data / make some kind of graph
 
 
 def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose=False):
-    # print("reading data")
     features = [[], []]
     for model_number, model in enumerate([model1, model2]):
         model = model.to(device)
@@ -88,4 +93,9 @@ def compute_model_rsa(train_data_loader, model1, model2, n_images=10000, verbose
 if __name__ == "__main__":
     params = sys.argv[1:]  # TODO : argparse
     print(params)
-    rsa_check(model_name_1=params[0], model_name_2=params[1])
+    _,_,rsa_score = rsa_check(
+        model_name_1=params[0],
+        model_name_2=params[1],
+        seed=params[2] if len() > 2 else 123,
+    )
+    print(rsa_score)

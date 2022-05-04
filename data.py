@@ -27,31 +27,16 @@ def get_dataloader(
     )  # TODO : check what is happening here
 
     if dataset_name == "cifar100":
-        train_dataset = datasets.CIFAR100(
-            root="./data", download=True, transform=transformations
+        validation_dataset = datasets.CIFAR100(
+            root=dataset_dir, download=True, transform=transformations, train=False
         )
     else:
-        train_dataset = datasets.ImageFolder(dataset_dir, transform=transformations)
+        print("Only cifar 100 has been implemented at the moment")
 
     train_sampler = None
 
-    test_dataset, train_dataset = torch.utils.data.random_split(
-        train_dataset,
-        [len(train_dataset) // 10, len(train_dataset) // 10 * 9],
-        torch.Generator().manual_seed(seed),
-    )
-
-    test_loader = torch.utils.data.DataLoader(
-        test_dataset,
-        batch_size=batch_size,
-        shuffle=(train_sampler is None),
-        sampler=train_sampler,
-        num_workers=num_workers,
-        drop_last=True,
-        pin_memory=True,
-    )
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
+    validation_loader = torch.utils.data.DataLoader(
+        validation_dataset,
         batch_size=batch_size,
         shuffle=(train_sampler is None),
         sampler=train_sampler,
@@ -60,7 +45,7 @@ def get_dataloader(
         pin_memory=True,
     )
 
-    return test_loader, train_loader
+    return validation_loader
 
 
 class ImageTransformation:
