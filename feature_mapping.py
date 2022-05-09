@@ -116,8 +116,8 @@ def features(model_name_1="vgg11", model_name_2="resnet50"):
     #     test_data_loader,
     # )
     # save hybrids
-    torch.save(mapper12, output_path / model_name_1 + "lin")
-    torch.save(mapper21, output_path / model_name_2 + "lin")
+    torch.save(mapper12, os.path.join(output_path, model_name_1 + "lin"))
+    torch.save(mapper21, os.path.join(output_path, model_name_2 + "lin"))
     pass
 
 
@@ -172,8 +172,8 @@ def reproduce_paper(model_name_1="vit", model_name_2="vgg11"):
     # analyse hybrid model performance
     test_models(model1, model2, model21, model12, train_data_loader, test_data_loader)
     # save hybrids
-    torch.save(model12, output_path / model_name_1)
-    torch.save(model21, output_path / model_name_2)
+    torch.save(model12, os.path.join(output_path, model_name_1))
+    torch.save(model21, os.path.join(output_path, model_name_2))
 
 
 if __name__ == "__main__":
